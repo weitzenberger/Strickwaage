@@ -20,13 +20,13 @@ from HX711.HX711_Python3.hx711 import HX711
 SCALES = {
     1: {  # Waagennummer als Key-Value
         "hx711": {
-            "dout_pin": 6,  # Raspberry PI DOUT_PIN Nummer
-            "pd_sck_pin": 5,  # Raspberry PI DOUT_PIN Nummer
+            "dout_pin": 5,  # Raspberry PI DOUT_PIN Nummer
+            "pd_sck_pin": 6,  # Raspberry PI DOUT_PIN Nummer
             "gain_channel_A": 128,  # Der gain ist optional. Default: 128
             "select_channel": 'A'  # Der Channel ist optiona. Default: 'A'
         },
-        "offset": 9999,  # Offset wird mithilfe von calibrate-bli.py berechnet
-        "ratio": 9999  # ratio wird mithilfe von calibrate-bli.py berechnet
+        "offset": 107154,  # Offset wird mithilfe von calibrate-bli.py berechnet
+        "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-bli.py berechnet
     }
 
 }
