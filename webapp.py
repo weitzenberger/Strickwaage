@@ -21,7 +21,7 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 @app.route('/', methods=['GET'])
-def get_weight(waage):
+def get_weight():
     """Gibt die angefragte Waage zurück.
 
     :param waage: int | Nummer der anzusteuerenden Waage
