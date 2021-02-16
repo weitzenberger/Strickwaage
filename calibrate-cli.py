@@ -18,8 +18,8 @@ try:
     GPIO.setmode(GPIO.BCM)  # set GPIO pin mode to BCM numbering
     # Create an object hx which represents your real hx711 chip
     # Required input parameters are only 'dout_pin' and 'pd_sck_pin'
-    dout_pin = input('Definiere DOUT_PIN')
-    pd_sck_pin = input('Definiere PD_SCK_PIN')
+    dout_pin = input('Definiere DOUT_PIN: ')
+    pd_sck_pin = input('Definiere PD_SCK_PIN: ')
 
     hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin))
     # measure tare and save the value as offset for current channel
@@ -43,7 +43,7 @@ try:
     input('Bekanntes Gewicht auf die Waage legen und Enter drücken.')
     reading = hx.get_data_mean()
     if reading:
-        print('Raw data unter Berücksichtung des Offsets', reading)
+        print('Raw data unter Berücksichtung des Offsets ', reading)
         known_weight_grams = input(
             'Schreib wie viel Gramm auf der Waage liegen: ')
         try:
@@ -61,13 +61,13 @@ try:
         hx.set_scale_ratio(ratio)  # set ratio for current channel
         print('Ratio is set.')
     else:
-        raise ValueError('Cannot calculate mean value. Try debug mode. Variable reading:', reading)
+        raise ValueError('Cannot calculate mean value. Try debug mode. Variable reading: ', reading)
 
-    print('Zusammenfassung:'
-          'dout_pin: {}'.format(dout_pin),
-          'pd_sck_pin: {}'.format(pd_sck_pin),
-          'ratio: {}'.format(ratio),
-          'offset: {}'.format(offset),
+    print('Zusammenfassung:\n'
+          'dout_pin: {}\n'.format(dout_pin),
+          'pd_sck_pin: {}\n'.format(pd_sck_pin),
+          'ratio: {}\n'.format(ratio),
+          'offset: {}\n'.format(offset),
           'Parameter müssen in strickwaage.py/SCALES manuell gesetzt werden')
 
 

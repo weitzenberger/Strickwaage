@@ -16,17 +16,17 @@ import RPi.GPIO as GPIO
 from HX711.HX711_Python3.hx711 import HX711
 
 
-# In SCALES werden alle benötigten Parameter gesammelt. SCALES ist mithilfe von calibrate-bli.py händisch zu pflegen.
+# In SCALES werden alle benötigten Parameter gesammelt. SCALES ist mithilfe von calibrate-cli.py händisch zu pflegen.
 SCALES = {
     1: {  # Waagennummer als Key-Value
         "hx711": {
             "dout_pin": 5,  # Raspberry PI DOUT_PIN Nummer
-            "pd_sck_pin": 6,  # Raspberry PI DOUT_PIN Nummer
+            "pd_sck_pin": 6,  # Raspberry PI PD_SCK_PIN Nummer
             "gain_channel_A": 128,  # Der gain ist optional. Default: 128
-            "select_channel": 'A'  # Der Channel ist optiona. Default: 'A'
+            "select_channel": 'A'  # Der Channel ist optional. Default: 'A'
         },
-        "offset": 107154,  # Offset wird mithilfe von calibrate-bli.py berechnet
-        "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-bli.py berechnet
+        "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
+        "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-cli.py berechnet
     }
 
 }
@@ -36,7 +36,7 @@ def get_weight(scale_number):
 
     scale = SCALES.get(scale_number, None)
     if not scale:
-        raise ValueError("Waage mit der Nummer '{} ist in {}/@SCALES nicht definiert'".format(scale_number, __file__))
+        raise ValueError("Waage mit der Nummer {} ist in {}/@SCALES nicht definiert'".format(scale_number, __file__))
     kwargs = scale['hx711']
     hx = HX711(**kwargs)
 
@@ -47,7 +47,7 @@ def get_weight(scale_number):
     return [
         {
             "weight": weight,
-            "waage": scale_number
+            "scale": scale_number
         }
     ]
 

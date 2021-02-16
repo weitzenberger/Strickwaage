@@ -23,27 +23,26 @@ PORT = 80
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-@app.route('/', methods=['GET'])
+@app.route('/scale/', methods=['GET'])
 def get_weight():
     """Gibt die angefragte Waage zurück.
 
-    :param waage: int | Nummer der anzusteuerenden Waage
-    :return: [{waage: int,
+    :return: [{scale: int,
                weight: float}]
     """
-    if 'waage' in request.args:
-        id = int(request.args['waage'])
+    if 'scale' in request.args:
+        id = int(request.args['scale'])
     else:
         raise ValueError('Keine WaagenID für GET-Request angegeben.')
     result = strickwaage.get_weight(scale_number=id)
     return jsonify(result)
 
 
-@app.route('/all', methods=['GET'])
+@app.route('/scale/all', methods=['GET'])
 def get_all():
     """Gibt eine Liste aller definierten Waagen zurück.
 
-    :return: [{waage: int,
+    :return: [{scale: int,
                weight: float},
                ...]
     """
