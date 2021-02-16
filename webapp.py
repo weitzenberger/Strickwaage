@@ -17,6 +17,9 @@ import flask
 from flask import request, jsonify
 import strickwaage
 
+HOST = '0.0.0.0'
+PORT = 80
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
@@ -47,4 +50,4 @@ def get_all():
     result = strickwaage.get_all()
     return jsonify(result)
 
-app.run()
+app.run(host=HOST, port=PORT)
