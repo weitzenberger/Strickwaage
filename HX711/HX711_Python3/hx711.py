@@ -338,7 +338,7 @@ class HX711:
         for _ in range(num):
             start_counter = time.perf_counter()
             if self.device_adress:
-                self.bus.write_byte_data(self.device_adress, OLATB, self._binary_to_decimal(self._pd_sck))
+                self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
                 self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
             else:
                 GPIO.output(self._pd_sck, True)
@@ -358,11 +358,6 @@ class HX711:
                     return False
         return True
 
-    def _binary_to_hex(self, binary):
-        return hex(int(binary, 2))
-
-    def _binary_to_decimal(self, binary):
-        return int(binary, 2)
 
     def _read(self):
         """
@@ -391,7 +386,7 @@ class HX711:
             start_counter = time.perf_counter()
             # request next bit from hx 711
             if self.device_adress:
-                self.bus.write_byte_data(self.device_adress, OLATB, self._binary_to_decimal(self._pd_sck))
+                self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
                 self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
             else:
                 GPIO.output(self._pd_sck, True)
@@ -665,7 +660,7 @@ class HX711:
         """
         if self.device_adress:
             self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
-            self.bus.write_byte_data(self.device_adress, OLATB, self._binary_to_decimal(self._pd_sck))
+            self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
         else:
             GPIO.output(self._pd_sck, False)
             GPIO.output(self._pd_sck, True)
