@@ -30,8 +30,8 @@ def get_weight():
     :return: [{scale: int,
                weight: float}]
     """
-    if 'scale' in request.args:
-        id = int(request.args['scale'])
+    if 'id' in request.args:
+        id = int(request.args['id'])
     else:
         raise ValueError('Keine WaagenID für GET-Request angegeben.')
     result = strickwaage.get_weight(scale_number=id)
@@ -49,4 +49,5 @@ def get_all():
     result = strickwaage.get_all()
     return jsonify(result)
 
-app.run(host=HOST, port=PORT)
+if __name__ == '__main__':
+    app.run(host=HOST, port=PORT)
