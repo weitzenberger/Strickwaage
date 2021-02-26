@@ -52,7 +52,7 @@ class HX711:
         self._scale_ratio_A_128 = 1  # scale ratio for channel A and gain 128
         self._scale_ratio_A_64 = 1  # scale ratio for channel A and gain 64
         self._scale_ratio_B = 1  # scale ratio for channel B
-        self._debug_mode = False
+        self._debug_mode = True
         self._data_filter = outliers_filter  # default it is used outliers_filter
         self.device_adress = device_address
         if self.device_adress:
@@ -367,6 +367,7 @@ class HX711:
         Returns: (bool || int) if it returns False then it is false reading.
             if it returns int then the reading was correct
         """
+        print('start _read')
         if self.device_adress:
             self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
         else:
