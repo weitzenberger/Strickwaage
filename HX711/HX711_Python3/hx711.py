@@ -314,6 +314,7 @@ class HX711:
         # if DOUT pin is low data is ready for reading
         if self.device_adress:
             bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA)
+            print(bus_ret)
             if bus_ret & 0b00000000 == 0b00000000:
                 return True
             else:
@@ -341,7 +342,7 @@ class HX711:
             start_counter = time.perf_counter()
             if self.device_adress:
                 self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
-                self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
+                self.bus.write_byte_data(self.device_adress, OLATB, 0)
             else:
                 GPIO.output(self._pd_sck, True)
                 GPIO.output(self._pd_sck, False)
@@ -371,7 +372,7 @@ class HX711:
         """
         print('start _read')
         if self.device_adress:
-            self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
+            self.bus.write_byte_data(self.device_adress, OLATB, 0)
         else:
             GPIO.output(self._pd_sck, False)  # start by setting the pd_sck to 0
         ready_counter = 0
@@ -385,17 +386,18 @@ class HX711:
 
         # read first 24 bits of data
         data_in = 0  # 2's complement data from hx 711
+        print('start read loop')
         for _ in range(24):
             start_counter = time.perf_counter()
             # request next bit from hx 711
             if self.device_adress:
                 self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
-                self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
+                self.bus.write_byte_data(self.device_adress, OLATB, 0)
             else:
                 GPIO.output(self._pd_sck, True)
                 GPIO.output(self._pd_sck, False)
             end_counter = time.perf_counter()
-            if end_counter - start_counter >= 0.00006:  # check if the hx 711 did not turn off...
+            if end_counter - start_counter >= 0.00011:  # check if the hx 711 did not turn off...
                 # if pd_sck pin is HIGH for 60 us and more than the HX 711 enters power down mode.
                 if self._debug_mode:
                     print('Not enough fast while reading data')
@@ -664,7 +666,7 @@ class HX711:
         power down method turns off the hx711.
         """
         if self.device_adress:
-            self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
+            self.bus.write_byte_data(self.device_adress, OLATB, 0)
             self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
         else:
             GPIO.output(self._pd_sck, False)
@@ -676,7 +678,7 @@ class HX711:
         power up function turns on the hx711.
         """
         if self.device_adress:
-            self.bus.write_byte_data(self.device_adress, OLATB, 0x00)
+            self.bus.write_byte_data(self.device_adress, OLATB, 0)
         else:
             GPIO.output(self._pd_sck, False)
         time.sleep(0.01)
