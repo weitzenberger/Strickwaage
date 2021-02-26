@@ -61,7 +61,7 @@ class HX711:
             self.bus.write_byte_data(self.device_adress, IODIRA, 0xFF)  # Definiere alle A-Pin als Input
             self.bus.write_byte_data(self.device_adress, IODIRB, 0x00)  # Definiere alle B-Pin als Output
             print('bus is set')
-
+            print('test')
         else:
             GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
             GPIO.setup(self._dout, GPIO.IN)  # pin _dout is input only
