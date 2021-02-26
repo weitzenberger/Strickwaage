@@ -404,8 +404,10 @@ class HX711:
             if self.device_adress:
                 bus_read = self.bus.read_byte_data(self.device_adress, GPIOA)
                 data_in = (data_in << 1) | bus_read[self._dout.find('1')]
+                print(data_in)
             else:
                 data_in = (data_in << 1) | GPIO.input(self._dout)
+                print(data_in)
 
         if self._wanted_channel == 'A' and self._gain_channel_A == 128:
             if not self._set_channel_gain(1):  # send only one bit which is 1
