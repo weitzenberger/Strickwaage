@@ -14,16 +14,22 @@ E-Mail: lennart29.9@gmail.com
 
 import RPi.GPIO as GPIO
 from HX711.HX711_Python3.hx711 import HX711
+import concurrent.futures
+import time
+
 
 
 # In SCALES werden alle benötigten Parameter gesammelt. SCALES ist mithilfe von calibrate-cli.py händisch zu pflegen.
 SCALES = {
     1: {  # Waagennummer als Key-Value
         "hx711": {
-            "dout_pin": 5,  # Raspberry PI DOUT_PIN Nummer
-            "pd_sck_pin": 6,  # Raspberry PI PD_SCK_PIN Nummer
+            "dout_pin": "00000001",  # Raspberry PI DOUT_PIN Nummer oder wenn "device_adress" definiert Binärcode für den PIN im Extensionboard
+            "pd_sck_pin": "00000001",  # Raspberry PI PD_SCK_PIN Nummer
             "gain_channel_A": 128,  # Der gain ist optional. Default: 128
-            "select_channel": 'A'  # Der Channel ist optional. Default: 'A'
+            "select_channel": 'A',  # Der Channel ist optional. Default: 'A'
+            "device_address": 0x27,  # Device Adresse von dem ExpansionBoard in Hexadezimal
+
+
         },
         "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
         "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-cli.py berechnet
@@ -53,7 +59,17 @@ def get_weight(scale_number):
 
 def get_all():
     ls = []
-    for scale_number in SCALES.keys():
-        ls += get_weight(scale_number)
+    threads = []
+    with concurrent.futures.ThreadPoolExecutor as executor:
+        for scale_number in SCALES.keys():
+            thread = executor.submit(get_weight, scale_number)
+            threads.append(thread)
+
+        for f in concurrent.futures.as_completed(threads):
+            ls += f.result()
     return ls
 
+if __name__ == '__main__':
+    while True:
+        print(get_weight(1))
+        time.sleep(1)
