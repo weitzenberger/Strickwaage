@@ -55,10 +55,12 @@ class HX711:
         self._debug_mode = True
         self._data_filter = outliers_filter  # default it is used outliers_filter
         self.device_adress = device_address
+        print('init')
         if self.device_adress:
             self.bus = smbus.SMBus(1)
             self.bus.write_byte_data(self.device_adress, IODIRA, 0xFF)  # Definiere alle A-Pin als Input
             self.bus.write_byte_data(self.device_adress, IODIRB, 0x00)  # Definiere alle B-Pin als Output
+            print('bus is set')
 
         else:
             GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
