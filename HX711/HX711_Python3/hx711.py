@@ -397,7 +397,7 @@ class HX711:
                 GPIO.output(self._pd_sck, True)
                 GPIO.output(self._pd_sck, False)
             end_counter = time.perf_counter()
-            if end_counter - start_counter >= 0.00011:  # check if the hx 711 did not turn off...
+            if end_counter - start_counter >= 0.00006:  # check if the hx 711 did not turn off...
                 # if pd_sck pin is HIGH for 60 us and more than the HX 711 enters power down mode.
                 if self._debug_mode:
                     print('Not enough fast while reading data')
