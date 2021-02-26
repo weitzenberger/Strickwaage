@@ -7,15 +7,15 @@ import statistics as stat
 import time
 
 import RPi.GPIO as GPIO
-import smbus
 
 
-IODIRA = 0x00  # aus Datenblatt Tabelle 3.2
-IODIRB = 0x10  # aus Datenblatt Tabelle 3.2
-GPIOA = 0x09  # aus Datenblatt Tabelle 3.2
-GPIOB = 0x19  # aus Datenblatt Tabelle 3.2
-OLATA = 0x0A  # aus Datenblatt Tabelle 3.2
-OLATB = 0x1A  # aus Datenblatt Tabelle 3.2
+
+import wiringpi2 as wiringpi
+
+
+PIN_BASE = 65  # lowest available starting number is 65
+
+
 
 class HX711:
     """
@@ -57,9 +57,13 @@ class HX711:
         self.device_adress = device_address
         print('init')
         if self.device_adress:
-            self.bus = smbus.SMBus(1)
-            self.bus.write_byte_data(self.device_adress, IODIRA, 0xFF)  # Definiere alle A-Pin als Input
-            self.bus.write_byte_data(self.device_adress, IODIRB, 0x00)  # Definiere alle B-Pin als Output
+
+            wiringpi.wiringPiSetup()  # initialise wiringpi
+            wiringpi.mcp23017Setup(PIN_BASE, self.device_adress)  # set up the pins and i2c address
+
+            wiringpi.pinMode(PIN_BASE + self._pd_sck, 1)  # sets GPA0 to output
+            wiringpi.pinMode(PIN_BASE + self._dout, 0)  # sets GPA0 to input
+
             print('bus is set')
             print('test')
         else:
@@ -313,9 +317,9 @@ class HX711:
         """
         # if DOUT pin is low data is ready for reading
         if self.device_adress:
-            bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA)
+            bus_ret = wiringpi.digitalRead(PIN_BASE + self._dout)
             print(bus_ret)
-            if bus_ret & 0b00000000 == 0b00000000:
+            if bus_ret == 0:
                 return True
             else:
                 return False
@@ -341,8 +345,8 @@ class HX711:
         for _ in range(num):
             start_counter = time.perf_counter()
             if self.device_adress:
-                self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
-                self.bus.write_byte_data(self.device_adress, OLATB, 0)
+                wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
+                wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
             else:
                 GPIO.output(self._pd_sck, True)
                 GPIO.output(self._pd_sck, False)
@@ -372,7 +376,7 @@ class HX711:
         """
         print('start _read')
         if self.device_adress:
-            self.bus.write_byte_data(self.device_adress, OLATB, 0)
+            wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)  # start by setting the pd_sck to 0
         else:
             GPIO.output(self._pd_sck, False)  # start by setting the pd_sck to 0
         ready_counter = 0
@@ -391,8 +395,8 @@ class HX711:
             start_counter = time.perf_counter()
             # request next bit from hx 711
             if self.device_adress:
-                self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
-                self.bus.write_byte_data(self.device_adress, OLATB, 0)
+                wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
+                wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
             else:
                 GPIO.output(self._pd_sck, True)
                 GPIO.output(self._pd_sck, False)
@@ -407,8 +411,8 @@ class HX711:
             # Shift the bits as they come to data_in variable.
             # Left shift by one bit then bitwise OR with the new bit.
             if self.device_adress:
-                bus_read = self.bus.read_byte_data(self.device_adress, GPIOA)
-                data_in = (data_in << 1) | bus_read[self._dout.find('1')]
+                data_in = (data_in << 1) | wiringpi.digitalRead(PIN_BASE + self._dout)
+
                 print(data_in)
             else:
                 data_in = (data_in << 1) | GPIO.input(self._dout)
@@ -666,8 +670,9 @@ class HX711:
         power down method turns off the hx711.
         """
         if self.device_adress:
-            self.bus.write_byte_data(self.device_adress, OLATB, 0)
-            self.bus.write_byte_data(self.device_adress, OLATB, int(self._pd_sck))
+            wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
+            wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
+
         else:
             GPIO.output(self._pd_sck, False)
             GPIO.output(self._pd_sck, True)
@@ -678,7 +683,8 @@ class HX711:
         power up function turns on the hx711.
         """
         if self.device_adress:
-            self.bus.write_byte_data(self.device_adress, OLATB, 0)
+            wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
+
         else:
             GPIO.output(self._pd_sck, False)
         time.sleep(0.01)
