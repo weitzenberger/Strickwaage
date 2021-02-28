@@ -67,8 +67,12 @@ class HX711:
             print('bus is set')
             print('test')
         else:
-            GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
-            GPIO.setup(self._dout, GPIO.IN)  # pin _dout is input only
+            # GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
+            # GPIO.setup(self._dout, GPIO.IN)  # pin _dout is input only
+            wiringpi.wiringPiSetupGpio()
+            wiringpi.pinMode(self._pd_sck, 1)
+            wiringpi.pinMode(self._dout, 0)
+
         self.select_channel(select_channel)
         self.set_gain_A(gain_channel_A)
 
@@ -324,7 +328,9 @@ class HX711:
             else:
                 return False
         else:
-            if GPIO.input(self._dout) == 0:
+            #if GPIO.input(self._dout) == 0:
+            if wiringpi.digitalRead(self._dout) == 0:
+
                 return True
             else:
                 return False
@@ -348,8 +354,11 @@ class HX711:
                 wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
                 wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
             else:
-                GPIO.output(self._pd_sck, True)
-                GPIO.output(self._pd_sck, False)
+                #GPIO.output(self._pd_sck, True)
+                #GPIO.output(self._pd_sck, False)
+                wiringpi.digitalWrite(self._pd_sck, True)
+                wiringpi.digitalWrite(self._pd_sck, False)
+
             end_counter = time.perf_counter()
             # check if hx 711 did not turn off...
             if end_counter - start_counter >= 0.00006:
@@ -378,7 +387,9 @@ class HX711:
         if self.device_adress:
             wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)  # start by setting the pd_sck to 0
         else:
-            GPIO.output(self._pd_sck, False)  # start by setting the pd_sck to 0
+            # GPIO.output(self._pd_sck, False)  # start by setting the pd_sck to 0
+            wiringpi.digitalWrite(self._pd_sck, False)  # start by setting the pd_sck to 0
+
         ready_counter = 0
         while (not self._ready() and ready_counter <= 40):
             time.sleep(0.01)  # sleep for 10 ms because data is not ready
@@ -398,8 +409,10 @@ class HX711:
                 wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
                 wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
             else:
-                GPIO.output(self._pd_sck, True)
-                GPIO.output(self._pd_sck, False)
+                #GPIO.output(self._pd_sck, True)
+                #GPIO.output(self._pd_sck, False)
+                wiringpi.digitalWrite(self._pd_sck, True)
+                wiringpi.digitalWrite(self._pd_sck, False)
             end_counter = time.perf_counter()
             if end_counter - start_counter >= 0.00006:  # check if the hx 711 did not turn off...
                 # if pd_sck pin is HIGH for 60 us and more than the HX 711 enters power down mode.
@@ -415,7 +428,9 @@ class HX711:
 
                 print(data_in)
             else:
-                data_in = (data_in << 1) | GPIO.input(self._dout)
+                #data_in = (data_in << 1) | GPIO.input(self._dout)
+                data_in = (data_in << 1) | wiringpi.digitalRead(self._dout)
+
                 print(data_in)
 
         if self._wanted_channel == 'A' and self._gain_channel_A == 128:
@@ -674,8 +689,10 @@ class HX711:
             wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
 
         else:
-            GPIO.output(self._pd_sck, False)
-            GPIO.output(self._pd_sck, True)
+            #GPIO.output(self._pd_sck, False)
+            #GPIO.output(self._pd_sck, True)
+            wiringpi.digitalWrite(self._pd_sck, False)
+            wiringpi.digitalWrite(self._pd_sck, True)
         time.sleep(0.01)
 
     def power_up(self):
@@ -686,7 +703,9 @@ class HX711:
             wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
 
         else:
-            GPIO.output(self._pd_sck, False)
+            wiringpi.digitalWrite(self._pd_sck, False)
+
+            #GPIO.output(self._pd_sck, False)
         time.sleep(0.01)
 
     def reset(self):
