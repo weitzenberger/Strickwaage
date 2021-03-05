@@ -369,6 +369,7 @@ class HX711:
                     0
                 ]
                 self.bus.write_block_data(self.device_adress, OLATB, block_data)
+                print()
             else:
                 #GPIO.output(self._pd_sck, True)
                 #GPIO.output(self._pd_sck, False)
@@ -377,7 +378,7 @@ class HX711:
 
             end_counter = time.perf_counter()
             # check if hx 711 did not turn off...
-            if end_counter - start_counter >= 0.00006:
+            if end_counter - start_counter >= 0.1:
                 # if pd_sck pin is HIGH for 60 us and more than the HX 711 enters power down mode.
                 if self._debug_mode:
                     print('Not enough fast while setting gain and channel')
@@ -437,7 +438,7 @@ class HX711:
                 wiringpi.digitalWrite(self._pd_sck, True)
                 wiringpi.digitalWrite(self._pd_sck, False)
             end_counter = time.perf_counter()
-            if end_counter - start_counter >= 0.00006:  # check if the hx 711 did not turn off...
+            if end_counter - start_counter >= 0.1:  # check if the hx 711 did not turn off...
                 # if pd_sck pin is HIGH for 60 us and more than the HX 711 enters power down mode.
                 if self._debug_mode:
                     print('Not enough fast while reading data')
