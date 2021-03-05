@@ -13,13 +13,13 @@ import RPi.GPIO as GPIO
 import wiringpi2 as wiringpi
 import smbus
 
-PIN_BASE = 65  # lowest available starting number is 65
-IODIRA = 0x00
-IODIRB = 0x10
-OLATA = 0x0A
-OLATB = 0x1A
-GPIOA = 0x09
-GPIOB = 0x19
+PIN_BASE = 65  # PIN BASE für wiringpi
+IODIRA = 0x00  # Register In/Out für A
+IODIRB = 0x10  # Register In/Out für B
+OLATA = 0x0A  # Register High/Low für A
+OLATB = 0x1A  # Register High/Low für B
+GPIOA = 0x09  # Register Read für A
+GPIOB = 0x19  # Register Read für B
 
 
 class HX711:
