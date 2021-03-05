@@ -448,9 +448,15 @@ class HX711:
             # Shift the bits as they come to data_in variable.
             # Left shift by one bit then bitwise OR with the new bit.
             if self.device_adress:
-                bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA) & 1<<self._dout
+                bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA) & (1 <<self._dout)
+                print('read_byte')
+                print(bus_ret)
                 if bus_ret == 1<< self._dout:
+                    print('set 1')
                     data_in = (data_in << 1) | 1
+                else:
+                    print('set 0')
+                    data_in = data_in<<1
                 #data_in = (data_in << 1) | wiringpi.digitalRead(PIN_BASE + self._dout)
 
                 print(data_in)
