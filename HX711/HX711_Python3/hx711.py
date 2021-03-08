@@ -457,6 +457,7 @@ class HX711:
             # Shift the bits as they come to data_in variable.
             # Left shift by one bit then bitwise OR with the new bit.
             if self.device_adress_dout:
+                time.sleep(0.002)
                 #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA) & (1 <<self._dout)
                 print('read_byte')
                 #if bus_ret == 1<< self._dout:
