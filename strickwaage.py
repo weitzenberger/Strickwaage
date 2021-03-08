@@ -27,7 +27,7 @@ SCALES = {
             "pd_sck_pin": 6,  # Raspberry PI PD_SCK_PIN Nummer
             "gain_channel_A": 128,  # Der gain ist optional. Default: 128
             "select_channel": 'A',  # Der Channel ist optional. Default: 'A'
-            "device_address": 0x27,  # Device Adresse von dem ExpansionBoard in Hexadezimal
+            "device_address_dout": 0x27,  # Device Adresse von dem ExpansionBoard in Hexadezimal
         },
         "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
         "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-cli.py berechnet
@@ -39,7 +39,7 @@ SCALES = {
             "pd_sck_pin": 6,  # Raspberry PI PD_SCK_PIN Nummer
             "gain_channel_A": 128,  # Der gain ist optional. Default: 128
             "select_channel": 'A',  # Der Channel ist optional. Default: 'A'
-            "device_address": 0x27,  # Device Adresse von dem ExpansionBoard in Hexadezimal
+            "device_address_dout": 0x27,  # Device Adresse von dem ExpansionBoard in Hexadezimal
 
         },
         "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
@@ -52,7 +52,7 @@ SCALES = {
             "pd_sck_pin": 6,  # Raspberry PI PD_SCK_PIN Nummer
             "gain_channel_A": 128,  # Der gain ist optional. Default: 128
             "select_channel": 'A',  # Der Channel ist optional. Default: 'A'
-            "device_address": 0x27,  # Device Adresse von dem ExpansionBoard in Hexadezimal
+            "device_address_dout": 0x27,  # Device Adresse von dem ExpansionBoard in Hexadezimal
 
         },
         "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
@@ -97,4 +97,11 @@ if __name__ == '__main__':
     while True:
         print('start')
         print(get_weight(2))
+
+        time.sleep(10)
+        print(get_weight(1))
+
+        time.sleep(10)
+        print(get_weight(0))
+
         time.sleep(10)
