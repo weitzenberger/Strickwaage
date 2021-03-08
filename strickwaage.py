@@ -108,7 +108,7 @@ def get_all():
 if __name__ == '__main__':
     while True:
         print('start')
-        print(get_weight(2))
+        print(get_weight(1))
 
         time.sleep(10)
         print(get_weight(1))
