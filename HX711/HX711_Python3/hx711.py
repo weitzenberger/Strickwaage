@@ -108,7 +108,7 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     def set_gain_A(self, gain):
         """
@@ -130,7 +130,7 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     def zero(self, readings=30):
         """
@@ -750,7 +750,6 @@ class HX711:
             wiringpi.digitalWrite(self._pd_sck, False)
 
             #GPIO.output(self._pd_sck, False)
-        time.sleep(0.01)
 
     def reset(self):
         """
