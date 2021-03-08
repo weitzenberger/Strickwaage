@@ -69,7 +69,7 @@ class HX711:
 
 
             wiringpi.wiringPiSetup()  # initialise wiringpi
-            wiringpi.mcp23017Setup(PIN_BASE, self.device_adress)  # set up the pins and i2c address
+            wiringpi.mcp23017Setup(PIN_BASE, self.device_adress_dout)  # set up the pins and i2c address
 
             #wiringpi.pinMode(PIN_BASE + self._pd_sck, 1)  # sets GPA0 to output
             wiringpi.pinMode(PIN_BASE + self._dout, 0)  # sets GPA0 to input
