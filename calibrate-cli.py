@@ -22,6 +22,10 @@ try:
     pd_sck_pin = input('Definiere PD_SCK_PIN auf RaspberryPI: ')
     pin_base = input('Definiere Pin Base für Extensionboard: ')
 
+    wiringpi.wiringPiSetup()
+    wiringpi.mcp23017Setup(pin_base, device)
+    wiringpi.wiringPiSetupGpio()
+
 
     hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin), device_address_dout=int(device, 16), pin_base=int(pin_base))
     # measure tare and save the value as offset for current channel
