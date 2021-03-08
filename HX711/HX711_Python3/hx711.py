@@ -73,8 +73,9 @@ class HX711:
 
             #wiringpi.pinMode(PIN_BASE + self._pd_sck, 1)  # sets GPA0 to output
             wiringpi.pinMode(PIN_BASE + self._dout, 0)  # sets GPA0 to input
-
-            GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
+            wiringpi.wiringPiSetupGpio()
+            wiringpi.pinMode(self._pd_sck, 1)
+            #GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
 
 
             print('bus is set')
@@ -367,8 +368,8 @@ class HX711:
             if self.device_adress_dout:
                 #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
                 #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
-                GPIO.output(self._pd_sck, True)
-                GPIO.output(self._pd_sck, False)
+                wiringpi.digitalWrite(self._pd_sck, True)
+                wiringpi.digitalWrite(self._pd_sck, False)
                 #block_data = [
                 #    1 << self._pd_sck,
                 #    0
@@ -408,7 +409,7 @@ class HX711:
         print('start _read')
         if self.device_adress_dout:
             #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)  # start by setting the pd_sck to 0
-            GPIO.output(self._pd_sck, False)
+            wiringpi.digitalWrite(self._pd_sck, False)  # start by setting the pd_sck to 0
             #self.bus.write_byte_data(self.device_adress, OLATB, 0)
         else:
             # GPIO.output(self._pd_sck, False)  # start by setting the pd_sck to 0
@@ -437,8 +438,8 @@ class HX711:
                 #    0
                 #]
                 #self.bus.write_block_data(self.device_adress, OLATB, block_data)
-                GPIO.output(self._pd_sck, True)
-                GPIO.output(self._pd_sck, False)
+                wiringpi.digitalWrite(self._pd_sck, True)
+                wiringpi.digitalWrite(self._pd_sck, False)
 
             else:
                 #GPIO.output(self._pd_sck, True)
@@ -457,7 +458,6 @@ class HX711:
             # Left shift by one bit then bitwise OR with the new bit.
             if self.device_adress_dout:
                 #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA) & (1 <<self._dout)
-                bus_ret = wiringpi.digitalRead(PIN_BASE + self._dout)
                 print('read_byte')
                 print(bin(bus_ret))
                 #if bus_ret == 1<< self._dout:
@@ -733,15 +733,14 @@ class HX711:
 
             #]
             #self.bus.write_block_data(self.device_adress, OLATB, block_data)
-            GPIO.output(self._pd_sck, False)
-
-            wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
+            wiringpi.digitalWrite(self._pd_sck, False)
+            wiringpi.digitalWrite(self._pd_sck, True)
 
         else:
-            GPIO.output(self._pd_sck, False)
-            GPIO.output(self._pd_sck, True)
-            #wiringpi.digitalWrite(self._pd_sck, False)
-            #wiringpi.digitalWrite(self._pd_sck, True)
+            #GPIO.output(self._pd_sck, False)
+            #GPIO.output(self._pd_sck, True)
+            wiringpi.digitalWrite(self._pd_sck, False)
+            wiringpi.digitalWrite(self._pd_sck, True)
         time.sleep(0.01)
 
     def power_up(self):
@@ -755,7 +754,7 @@ class HX711:
             #    0
             #]
             #self.bus.write_block_data(self.device_adress, OLATB, block_data)
-            GPIO.output(self._pd_sck, False)
+            wiringpi.digitalWrite(self._pd_sck, False)
 
 
         else:
