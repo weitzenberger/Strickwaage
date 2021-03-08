@@ -333,7 +333,7 @@ class HX711:
         Returns: bool True if ready else False when not ready        
         """
         # if DOUT pin is low data is ready for reading
-        if self.device_adress:
+        if self.device_adress_dout:
             bus_ret = wiringpi.digitalRead(PIN_BASE + self._dout)
             #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA)
             print(bus_ret)
@@ -429,7 +429,7 @@ class HX711:
         for _ in range(24):
             start_counter = time.perf_counter()
             # request next bit from hx 711
-            if self.device_adress:
+            if self.device_adress_dout:
                 #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
                 #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
                 #block_data = [
