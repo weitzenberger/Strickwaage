@@ -459,7 +459,6 @@ class HX711:
             if self.device_adress_dout:
                 #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA) & (1 <<self._dout)
                 print('read_byte')
-                print(bin(bus_ret))
                 #if bus_ret == 1<< self._dout:
                 #    print('set 1')
                 #    data_in = (data_in << 1) | 1
