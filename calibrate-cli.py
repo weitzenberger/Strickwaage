@@ -23,7 +23,7 @@ try:
     pin_base = input('Definiere Pin Base für Extensionboard: ')
 
     wiringpi.wiringPiSetup()
-    wiringpi.mcp23017Setup(pin_base, device)
+    wiringpi.mcp23017Setup(int(pin_base), int(device, 16))
     wiringpi.wiringPiSetupGpio()
 
 
