@@ -61,7 +61,6 @@ class HX711:
         self._data_filter = outliers_filter  # default it is used outliers_filter
         self.device_adress_dout = device_address_dout
         self.pin_base = pin_base
-        print('init')
         if self.device_adress_dout:
             #self.bus = smbus.SMBus(1)
 
@@ -79,8 +78,7 @@ class HX711:
             #GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
 
 
-            print('bus is set')
-            print('test')
+
         else:
             # GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
             # GPIO.setup(self._dout, GPIO.IN)  # pin _dout is input only
@@ -338,7 +336,6 @@ class HX711:
         if self.device_adress_dout:
             bus_ret = wiringpi.digitalRead(self.pin_base + self._dout)
             #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA)
-            print(bus_ret)
             if bus_ret == 0:
                 return True
             else:
@@ -407,7 +404,6 @@ class HX711:
         Returns: (bool || int) if it returns False then it is false reading.
             if it returns int then the reading was correct
         """
-        print('start _read')
         if self.device_adress_dout:
             #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)  # start by setting the pd_sck to 0
             wiringpi.digitalWrite(self._pd_sck, False)  # start by setting the pd_sck to 0
@@ -427,7 +423,6 @@ class HX711:
 
         # read first 24 bits of data
         data_in = 0  # 2's complement data from hx 711
-        print('start read loop')
         for _ in range(24):
             start_counter = time.perf_counter()
             # request next bit from hx 711
@@ -458,9 +453,7 @@ class HX711:
             # Shift the bits as they come to data_in variable.
             # Left shift by one bit then bitwise OR with the new bit.
             if self.device_adress_dout:
-                time.sleep(0.002)
                 #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA) & (1 <<self._dout)
-                print('read_byte')
                 #if bus_ret == 1<< self._dout:
                 #    print('set 1')
                 #    data_in = (data_in << 1) | 1
@@ -469,12 +462,10 @@ class HX711:
                 #    data_in = data_in<<1
                 data_in = (data_in << 1) | wiringpi.digitalRead(self.pin_base + self._dout)
 
-                print(data_in)
             else:
                 #data_in = (data_in << 1) | GPIO.input(self._dout)
                 data_in = (data_in << 1) | wiringpi.digitalRead(self._dout)
 
-                print(data_in)
 
         if self._wanted_channel == 'A' and self._gain_channel_A == 128:
             if not self._set_channel_gain(1):  # send only one bit which is 1
