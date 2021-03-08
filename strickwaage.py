@@ -46,8 +46,8 @@ SCALES = {
             "pin_base": PIN_BASE_1
 
         },
-        "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
-        "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-cli.py berechnet
+        "offset": 231005,  # Offset wird mithilfe von calibrate-cli.py berechnet
+        "ratio": 516.6733333333333  # ratio wird mithilfe von calibrate-cli.py berechnet
     },
     3: {  # Waagennummer als Key-Value
         "hx711": {
@@ -60,8 +60,8 @@ SCALES = {
             "pin_base": PIN_BASE_1
 
         },
-        "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
-        "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-cli.py berechnet
+        "offset": -9418,  # Offset wird mithilfe von calibrate-cli.py berechnet
+        "ratio": 448.98833333333334  # ratio wird mithilfe von calibrate-cli.py berechnet
     }
 
 }
