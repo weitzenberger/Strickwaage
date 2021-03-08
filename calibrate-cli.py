@@ -23,7 +23,7 @@ try:
     pin_base = input('Definiere Pin Base für Extensionboard: ')
 
 
-    hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin), device_address_dout=int(device), pin_base=int(pin_base))
+    hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin), device_address_dout=int(device, 16), pin_base=int(pin_base))
     # measure tare and save the value as offset for current channel
     # and gain selected. That means channel A and gain 128
     err = hx.zero()
