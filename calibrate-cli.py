@@ -12,16 +12,18 @@ E-Mail: lennart29.9@gmail.com
 
 """
 import RPi.GPIO as GPIO  # import GPIO
+import wiringpi
 from HX711.HX711_Python3.hx711 import HX711  # import the class HX711
 
 try:
-    GPIO.setmode(GPIO.BCM)  # set GPIO pin mode to BCM numbering
-    # Create an object hx which represents your real hx711 chip
-    # Required input parameters are only 'dout_pin' and 'pd_sck_pin'
-    dout_pin = input('Definiere DOUT_PIN: ')
-    pd_sck_pin = input('Definiere PD_SCK_PIN: ')
 
-    hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin))
+    dout_pin = input('Definiere DOUT_PIN auf dem Extensionboard: ')
+    device = input('Definiere Registeradresse von dem Extensionboard: ')
+    pd_sck_pin = input('Definiere PD_SCK_PIN auf RaspberryPI: ')
+    pin_base = input('Definiere Pin Base für Extensionboard: ')
+
+
+    hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin), device_address_dout=int(device), pin_base=pin_base)
     # measure tare and save the value as offset for current channel
     # and gain selected. That means channel A and gain 128
     err = hx.zero()
@@ -84,4 +86,4 @@ except (KeyboardInterrupt, SystemExit):
     print('Bye :)')
 
 finally:
-    GPIO.cleanup()
+ pass
