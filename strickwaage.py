@@ -65,6 +65,17 @@ SCALES = {
     }
 
 }
+def gpio_boiler_plate(func):
+    def wrap(*args, **kwargs):
+        wiringpi.wiringPiSetup()
+        wiringpi.mcp23017Setup(PIN_BASE_1, EXPANSION_BOARD_1)
+        wiringpi.wiringPiSetupGpio()
+        result = func(*args, **kwargs)
+
+        return result
+
+    return wrap
+
 
 @gpio_boiler_plate
 def get_weight(scale_number):
@@ -92,16 +103,7 @@ def get_all():
         ls += get_weight(scale_number)
     return ls
 
-def gpio_boiler_plate(func):
-    def wrap(*args, **kwargs):
-        wiringpi.wiringPiSetup()
-        wiringpi.mcp23017Setup(PIN_BASE_1, EXPANSION_BOARD_1)
-        wiringpi.wiringPiSetupGpio()
-        result = func(*args, **kwargs)
 
-        return result
-
-    return wrap
 
 if __name__ == '__main__':
     while True:
