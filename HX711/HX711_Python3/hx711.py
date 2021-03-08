@@ -13,7 +13,6 @@ import RPi.GPIO as GPIO
 import wiringpi2 as wiringpi
 import smbus
 
-PIN_BASE = 65  # PIN BASE für wiringpi
 IODIRA = 0x00  # Register In/Out für A
 IODIRB = 0x10  # Register In/Out für B
 OLATA = 0x0A  # Register High/Low für A
@@ -31,6 +30,7 @@ class HX711:
                  dout_pin,
                  pd_sck_pin,
                  device_address_dout=None,
+                 pin_base=None,
                  gain_channel_A=128,
                  select_channel='A'):
         """
@@ -60,6 +60,7 @@ class HX711:
         self._debug_mode = True
         self._data_filter = outliers_filter  # default it is used outliers_filter
         self.device_adress_dout = device_address_dout
+        self.pin_base = pin_base
         print('init')
         if self.device_adress_dout:
             #self.bus = smbus.SMBus(1)
@@ -68,12 +69,12 @@ class HX711:
             #self.bus.write_byte_data(self.device_adress, IODIRA, 0x00)  # Alle GPB auf input
 
 
-            wiringpi.wiringPiSetup()  # initialise wiringpi
-            wiringpi.mcp23017Setup(PIN_BASE, self.device_adress_dout)  # set up the pins and i2c address
+           # wiringpi.wiringPiSetup()  # initialise wiringpi
+            #wiringpi.mcp23017Setup(PIN_BASE, self.device_adress_dout)  # set up the pins and i2c address
 
             #wiringpi.pinMode(PIN_BASE + self._pd_sck, 1)  # sets GPA0 to output
-            wiringpi.pinMode(PIN_BASE + self._dout, 0)  # sets GPA0 to input
-            wiringpi.wiringPiSetupGpio()
+            wiringpi.pinMode(self.pin_base + self._dout, 0)  # sets GPA0 to input
+            #wiringpi.wiringPiSetupGpio()
             wiringpi.pinMode(self._pd_sck, 1)
             #GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
 
@@ -335,7 +336,7 @@ class HX711:
         """
         # if DOUT pin is low data is ready for reading
         if self.device_adress_dout:
-            bus_ret = wiringpi.digitalRead(PIN_BASE + self._dout)
+            bus_ret = wiringpi.digitalRead(self.pin_base + self._dout)
             #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA)
             print(bus_ret)
             if bus_ret == 0:
@@ -466,7 +467,7 @@ class HX711:
                 #else:
                 #    print('set 0')
                 #    data_in = data_in<<1
-                data_in = (data_in << 1) | wiringpi.digitalRead(PIN_BASE + self._dout)
+                data_in = (data_in << 1) | wiringpi.digitalRead(self.pin_base + self._dout)
 
                 print(data_in)
             else:
@@ -519,7 +520,7 @@ class HX711:
 
         return signed_data
 
-    def get_raw_data_mean(self, readings=30):
+    def get_raw_data_mean(self, readings=6):
         """
         get_raw_data_mean returns mean value of readings.
 
@@ -741,7 +742,6 @@ class HX711:
             #GPIO.output(self._pd_sck, True)
             wiringpi.digitalWrite(self._pd_sck, False)
             wiringpi.digitalWrite(self._pd_sck, True)
-        time.sleep(0.01)
 
     def power_up(self):
         """
