@@ -783,7 +783,7 @@ def outliers_filter(data_list):
             s.append(num / mdev)
     else:
         # mdev is 0. Therefore all data samples in the list data have the same value.
-        return data
+        return [stat.median(data)]
     filtered_data = []
     for i in range(len(data)):
         if s[i] < m:
