@@ -365,7 +365,7 @@ class HX711:
 
             end_counter = time.perf_counter()
             # check if hx 711 did not turn off...
-            if end_counter - start_counter >= 0.006:
+            if end_counter - start_counter >= 0.00006:
                 # if pd_sck pin is HIGH for 60 us and more than the HX 711 enters power down mode.
                 if self._debug_mode:
                     print('Not enough fast while setting gain and channel')
@@ -553,8 +553,11 @@ class HX711:
             if self._current_channel == 'A' and self._gain_channel_A == 128:
                 return result - self._offset_A_128
             elif self._current_channel == 'A' and self._gain_channel_A == 64:
+                print('das sollte nicht passieren')
                 return result - self._offset_A_64
             else:
+                print('das sollte nicht passieren')
+
                 return result - self._offset_B
         else:
             return False
@@ -577,9 +580,12 @@ class HX711:
                 return float(
                     (result - self._offset_A_128) / self._scale_ratio_A_128)
             elif self._current_channel == 'A' and self._gain_channel_A == 64:
+                print('das sollte nicht passieren')
+
                 return float(
                     (result - self._offset_A_64) / self._scale_ratio_A_64)
             else:
+                print('das sollte nicht passieren')
                 return float((result - self._offset_B) / self._scale_ratio_B)
         else:
             return False
