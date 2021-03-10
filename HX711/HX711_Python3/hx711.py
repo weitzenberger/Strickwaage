@@ -577,6 +577,8 @@ class HX711:
         result = self.get_raw_data_mean(readings)
         if result != False:
             if self._current_channel == 'A' and self._gain_channel_A == 128:
+                print(self._offset_A_128)
+                print(self._scale_ratio_A_128)
                 return float(
                     (result - self._offset_A_128) / self._scale_ratio_A_128)
             elif self._current_channel == 'A' and self._gain_channel_A == 64:
