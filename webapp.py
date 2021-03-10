@@ -23,6 +23,8 @@ PORT = 80
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
+
+
 @app.route('/scale/', methods=['GET'])
 def get_weight():
     """Gibt die angefragte Waage zurück.
@@ -50,4 +52,6 @@ def get_all():
     return jsonify(result)
 
 if __name__ == '__main__':
+    strickwaage.init()
     app.run(host=HOST, port=PORT)
+
