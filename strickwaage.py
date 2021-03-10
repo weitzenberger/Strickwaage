@@ -111,10 +111,10 @@ if __name__ == '__main__':
         print('start')
         print(get_weight(1))
 
-        time.sleep(10)
+        time.sleep(2)
         print(get_weight(1))
 
-        time.sleep(10)
+        time.sleep(2)
         print(get_weight(2))
 
-        time.sleep(10)
+        time.sleep(2)
