@@ -58,7 +58,7 @@ class HX711:
         self._scale_ratio_A_128 = 1  # scale ratio for channel A and gain 128
         self._scale_ratio_A_64 = 1  # scale ratio for channel A and gain 64
         self._scale_ratio_B = 1  # scale ratio for channel B
-        self._debug_mode = False
+        self._debug_mode = True
         self._data_filter = outliers_filter  # default it is used outliers_filter
         self.device_adress_dout = device_address_dout
         self.pin_base = pin_base
