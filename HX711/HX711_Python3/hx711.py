@@ -5,6 +5,9 @@ This file holds HX711 class
 
 import statistics as stat
 import time
+import collections
+import RPi.GPIO as GPIO
+import numpy as np
 
 
 
@@ -59,33 +62,23 @@ class HX711:
         self._data_filter = outliers_filter  # default it is used outliers_filter
         self.device_adress_dout = device_address_dout
         self.pin_base = pin_base
-        if self.device_adress_dout:
-            #self.bus = smbus.SMBus(1)
-
-            #self.bus.write_byte_data(self.device_adress, IODIRB, 0x00)  # Alle GPB auf output
-            #self.bus.write_byte_data(self.device_adress, IODIRA, 0x00)  # Alle GPB auf input
-
-
-           # wiringpi.wiringPiSetup()  # initialise wiringpi
-            #wiringpi.mcp23017Setup(PIN_BASE, self.device_adress_dout)  # set up the pins and i2c address
-
-            #wiringpi.pinMode(PIN_BASE + self._pd_sck, 1)  # sets GPA0 to output
-            wiringpi.pinMode(self.pin_base + self._dout, 0)  # sets GPA0 to input
-            #wiringpi.wiringPiSetupGpio()
-            wiringpi.pinMode(self._pd_sck, 1)
-            #GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
-
+        if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
+            GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
+            GPIO.setup(self._dout, GPIO.IN)  # pin _dout is input only
+            self.select_channel(select_channel)
+            self.set_gain_A(gain_channel_A)
+            time.sleep(0.5)
 
 
         else:
             # GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
             # GPIO.setup(self._dout, GPIO.IN)  # pin _dout is input only
-            wiringpi.wiringPiSetupGpio()
-            wiringpi.pinMode(self._pd_sck, 1)
-            wiringpi.pinMode(self._dout, 0)
 
-        self.select_channel(select_channel)
-        self.set_gain_A(gain_channel_A)
+            wiringpi.pinMode(self.pin_base + self._dout, 0)  # sets GPA0 to input
+            wiringpi.pinMode(self._pd_sck, 1)
+            self.select_channel(select_channel)
+            self.set_gain_A(gain_channel_A)
+            time.sleep(0.5)
 
     def select_channel(self, channel):
         """
@@ -108,7 +101,7 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
-        time.sleep(0.1)
+
 
     def set_gain_A(self, gain):
         """
@@ -130,7 +123,6 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
-        time.sleep(0.1)
 
     def zero(self, readings=30):
         """
@@ -331,16 +323,16 @@ class HX711:
         Returns: bool True if ready else False when not ready        
         """
         # if DOUT pin is low data is ready for reading
-        if self.device_adress_dout:
+        if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
             bus_ret = wiringpi.digitalRead(self.pin_base + self._dout)
-            #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA)
-            if bus_ret == 0:
-                return True
-            else:
-                return False
+
+            for i in GPIO.input(self._dout):
+                if i != 0:
+                    return False
+            return True
         else:
             #if GPIO.input(self._dout) == 0:
-            if wiringpi.digitalRead(self._dout) == 0:
+            if wiringpi.digitalRead(self.pin_base + self._dout) == 0:
 
                 return True
             else:
@@ -361,17 +353,10 @@ class HX711:
         """
         for _ in range(num):
             start_counter = time.perf_counter()
-            if self.device_adress_dout:
-                #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
-                #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
-                wiringpi.digitalWrite(self._pd_sck, True)
-                wiringpi.digitalWrite(self._pd_sck, False)
-                #block_data = [
-                #    1 << self._pd_sck,
-                #    0
-                #]
-                #self.bus.write_block_data(self.device_adress, OLATB, block_data)
-                #print()
+            if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
+                GPIO.output(self._pd_sck, True)
+                GPIO.output(self._pd_sck, False)
+
             else:
                 #GPIO.output(self._pd_sck, True)
                 #GPIO.output(self._pd_sck, False)
@@ -380,7 +365,7 @@ class HX711:
 
             end_counter = time.perf_counter()
             # check if hx 711 did not turn off...
-            if end_counter - start_counter >= 0.1:
+            if end_counter - start_counter >= 0.006:
                 # if pd_sck pin is HIGH for 60 us and more than the HX 711 enters power down mode.
                 if self._debug_mode:
                     print('Not enough fast while setting gain and channel')
@@ -402,9 +387,10 @@ class HX711:
         Returns: (bool || int) if it returns False then it is false reading.
             if it returns int then the reading was correct
         """
-        if self.device_adress_dout:
+        if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
+
             #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)  # start by setting the pd_sck to 0
-            wiringpi.digitalWrite(self._pd_sck, False)  # start by setting the pd_sck to 0
+            GPIO.output(self._pd_sck, False)  # start by setting the pd_sck to 0
             #self.bus.write_byte_data(self.device_adress, OLATB, 0)
         else:
             # GPIO.output(self._pd_sck, False)  # start by setting the pd_sck to 0
@@ -421,19 +407,16 @@ class HX711:
 
         # read first 24 bits of data
         data_in = 0  # 2's complement data from hx 711
+        if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
+            data_in = list(np.zeros(len(self._dout)))
+        else:
+            data_in = 0
         for _ in range(24):
             start_counter = time.perf_counter()
             # request next bit from hx 711
-            if self.device_adress_dout:
-                #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, True)
-                #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
-                #block_data = [
-                #    1 << self._pd_sck,
-                #    0
-                #]
-                #self.bus.write_block_data(self.device_adress, OLATB, block_data)
-                wiringpi.digitalWrite(self._pd_sck, True)
-                wiringpi.digitalWrite(self._pd_sck, False)
+            if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
+                GPIO.output(self._pd_sck, True)
+                GPIO.output(self._pd_sck, False)
 
             else:
                 #GPIO.output(self._pd_sck, True)
@@ -450,19 +433,14 @@ class HX711:
                 return False
             # Shift the bits as they come to data_in variable.
             # Left shift by one bit then bitwise OR with the new bit.
-            if self.device_adress_dout:
-                #bus_ret = self.bus.read_byte_data(self.device_adress, GPIOA) & (1 <<self._dout)
-                #if bus_ret == 1<< self._dout:
-                #    print('set 1')
-                #    data_in = (data_in << 1) | 1
-                #else:
-                #    print('set 0')
-                #    data_in = data_in<<1
-                data_in = (data_in << 1) | wiringpi.digitalRead(self.pin_base + self._dout)
+            if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
+                data = GPIO.input([i + self.pin_base for i in self._dout])
+                for i, v in enumerate(data):
+                    data_in[i] = (data_in[i] << 1) | v
 
             else:
                 #data_in = (data_in << 1) | GPIO.input(self._dout)
-                data_in = (data_in << 1) | wiringpi.digitalRead(self._dout)
+                data_in = (data_in << 1) | wiringpi.digitalRead(self.pin_base + self._dout)
 
 
         if self._wanted_channel == 'A' and self._gain_channel_A == 128:
@@ -487,22 +465,42 @@ class HX711:
             print('Binary value as received: {}\n'.format(bin(data_in)))
 
         #check if data is valid
-        if (data_in == 0x7fffff
-                or  # 0x7fffff is the highest possible value from hx711
-                data_in == 0x800000
-           ):  # 0x800000 is the lowest possible value from hx711
-            if self._debug_mode:
-                print('Invalid data detected: {}\n'.format(data_in))
-            return False  # rturn false because the data is invalid
+        if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
+            for data in data_in:
+                if (data == 0x7fffff
+                        or  # 0x7fffff is the highest possible value from hx711
+                        data == 0x800000
+                ):  # 0x800000 is the lowest possible value from hx711
+                    if self._debug_mode:
+                        print('Invalid data detected: {}\n'.format(data))
+                    return False  # rturn false because the data is invalid
 
-        # calculate int from 2's complement
-        signed_data = 0
-        # 0b1000 0000 0000 0000 0000 0000 check if the sign bit is 1. Negative number.
-        if (data_in & 0x800000):
-            signed_data = -(
-                (data_in ^ 0xffffff) + 1)  # convert from 2's complement to int
-        else:  # else do not do anything the value is positive number
-            signed_data = data_in
+                # calculate int from 2's complement
+                signed_data = 0
+                # 0b1000 0000 0000 0000 0000 0000 check if the sign bit is 1. Negative number.
+                if (data & 0x800000):
+                    signed_data = -(
+                            (data ^ 0xffffff) + 1)  # convert from 2's complement to int
+                else:  # else do not do anything the value is positive number
+                    signed_data = data
+
+        else:
+            if (data_in == 0x7fffff
+                    or  # 0x7fffff is the highest possible value from hx711
+                    data_in == 0x800000
+               ):  # 0x800000 is the lowest possible value from hx711
+                if self._debug_mode:
+                    print('Invalid data detected: {}\n'.format(data_in))
+                return False  # rturn false because the data is invalid
+
+            # calculate int from 2's complement
+            signed_data = 0
+            # 0b1000 0000 0000 0000 0000 0000 check if the sign bit is 1. Negative number.
+            if (data_in & 0x800000):
+                signed_data = -(
+                    (data_in ^ 0xffffff) + 1)  # convert from 2's complement to int
+            else:  # else do not do anything the value is positive number
+                signed_data = data_in
 
         if self._debug_mode:
             print('Converted 2\'s complement value: {}\n'.format(signed_data))
@@ -717,18 +715,12 @@ class HX711:
         power down method turns off the hx711.
         """
         if self.device_adress_dout:
-            #block_data = [
-            #    0,
-             #   1 << self._pd_sck
 
-            #]
-            #self.bus.write_block_data(self.device_adress, OLATB, block_data)
             wiringpi.digitalWrite(self._pd_sck, False)
             wiringpi.digitalWrite(self._pd_sck, True)
 
         else:
-            #GPIO.output(self._pd_sck, False)
-            #GPIO.output(self._pd_sck, True)
+
             wiringpi.digitalWrite(self._pd_sck, False)
             wiringpi.digitalWrite(self._pd_sck, True)
 
@@ -737,19 +729,13 @@ class HX711:
         power up function turns on the hx711.
         """
         if self.device_adress_dout:
-            #wiringpi.digitalWrite(PIN_BASE + self._pd_sck, False)
-            #block_data = [
 
-            #    0
-            #]
-            #self.bus.write_block_data(self.device_adress, OLATB, block_data)
             wiringpi.digitalWrite(self._pd_sck, False)
 
 
         else:
             wiringpi.digitalWrite(self._pd_sck, False)
 
-            #GPIO.output(self._pd_sck, False)
 
     def reset(self):
         """
