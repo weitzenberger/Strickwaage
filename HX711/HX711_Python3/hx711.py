@@ -233,26 +233,33 @@ class HX711:
             TypeError: if offset is not int type
         """
         print("set_ratio" + str(scale_ratio))
-        self._scale_ratio_A_128 = scale_ratio
         channel = channel.capitalize()
         if isinstance(gain_A, int):
             if channel == 'A' and gain_A == 128:
+                print(10)
                 self._scale_ratio_A_128 = scale_ratio
                 return
             elif channel == 'A' and gain_A == 64:
+                print(20)
+
                 self._scale_ratio_A_64 = scale_ratio
                 return
             elif channel == 'B':
+                print(30)
                 self._scale_ratio_B = scale_ratio
                 return
             elif channel == '':
+                print(40)
                 if self._current_channel == 'A' and self._gain_channel_A == 128:
+                    print(50)
                     self._scale_ratio_A_128 = scale_ratio
                     return
                 elif self._current_channel == 'A' and self._gain_channel_A == 64:
+                    print(60)
                     self._scale_ratio_A_64 = scale_ratio
                     return
                 else:
+                    print(70)
                     self._scale_ratio_B = scale_ratio
                     return
             else:
