@@ -69,7 +69,7 @@ def init():
     wiringpi.wiringPiSetupGpio()
     for key, scale in SCALES.items():
         kwargs = scale['hx711']
-        SCALES[key].update({"scale": HX711(kwargs)})
+        SCALES[key].update({"scale": HX711(**kwargs)})
 
 
 def get_weight_running(scale_number):
