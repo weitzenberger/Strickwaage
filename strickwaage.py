@@ -81,7 +81,10 @@ def get_weight(scale_number):
 
     hx.set_offset(scale['offset'])
     hx.set_scale_ratio(scale['ratio'])
+
     weight = hx.get_weight_mean()
+    while not weight:
+        weight = hx.get_weight_mean()
 
     return [
         {
