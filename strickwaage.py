@@ -83,7 +83,7 @@ def get_weight(scale_number):
     hx.set_scale_ratio(scale['ratio'])
 
     weight = hx.get_weight_mean()
-    while not weight:
+    while hx.get_current_scale_ratio(kwargs['select_channel'], kwargs['gain_channel_A']) == 1:
         weight = hx.get_weight_mean()
 
     return [
