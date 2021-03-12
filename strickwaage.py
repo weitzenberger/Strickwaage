@@ -67,20 +67,8 @@ def init():
     wiringpi.wiringPiSetup()
     wiringpi.mcp23017Setup(PIN_BASE_1, EXPANSION_BOARD_1)
     wiringpi.wiringPiSetupGpio()
-    for key, scale in SCALES.items():
-        kwargs = scale['hx711']
-        SCALES[key].update({"scale": HX711(**kwargs)})
 
 
-def get_weight_running(scale_number):
-    hx = SCALES[scale_number]['scale']
-    weight = hx.get_weight_mean()
-    return [
-        {
-            "weight": weight,
-            "scale": scale_number
-        }
-    ]
 
 
 
