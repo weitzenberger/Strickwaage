@@ -14,12 +14,6 @@ import numpy as np
 
 import wiringpi
 
-IODIRA = 0x00  # Register In/Out für A
-IODIRB = 0x10  # Register In/Out für B
-OLATA = 0x0A  # Register High/Low für A
-OLATB = 0x1A  # Register High/Low für B
-GPIOA = 0x09  # Register Read für A
-GPIOB = 0x19  # Register Read für B
 
 
 class HX711:
@@ -30,7 +24,6 @@ class HX711:
     def __init__(self,
                  dout_pin,
                  pd_sck_pin,
-                 device_address_dout=None,
                  pin_base=None,
                  gain_channel_A=128,
                  select_channel='A'):
@@ -60,7 +53,6 @@ class HX711:
         self._scale_ratio_B = 1  # scale ratio for channel B
         self._debug_mode = False
         self._data_filter = outliers_filter  # default it is used outliers_filter
-        self.device_adress_dout = device_address_dout
         self.pin_base = pin_base
         if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
             GPIO.setup(self._pd_sck, GPIO.OUT)  # pin _pd_sck is output only
@@ -78,6 +70,7 @@ class HX711:
             wiringpi.pinMode(self._pd_sck, 1)
             self.select_channel(select_channel)
             self.set_gain_A(gain_channel_A)
+            time.sleep(0.5)
 
     def select_channel(self, channel):
         """
@@ -100,7 +93,6 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
-        time.sleep(0.5)
 
     def set_gain_A(self, gain):
         """
@@ -122,7 +114,6 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
-        time.sleep(0.5)
 
     def zero(self, readings=30):
         """
@@ -736,27 +727,19 @@ class HX711:
         """
         power down method turns off the hx711.
         """
-        if self.device_adress_dout:
 
-            wiringpi.digitalWrite(self._pd_sck, False)
-            wiringpi.digitalWrite(self._pd_sck, True)
 
-        else:
+        wiringpi.digitalWrite(self._pd_sck, False)
+        wiringpi.digitalWrite(self._pd_sck, True)
 
-            wiringpi.digitalWrite(self._pd_sck, False)
-            wiringpi.digitalWrite(self._pd_sck, True)
+
 
     def power_up(self):
         """
         power up function turns on the hx711.
         """
-        if self.device_adress_dout:
 
-            wiringpi.digitalWrite(self._pd_sck, False)
-
-
-        else:
-            wiringpi.digitalWrite(self._pd_sck, False)
+        wiringpi.digitalWrite(self._pd_sck, False)
 
 
     def reset(self):
