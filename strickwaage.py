@@ -37,7 +37,7 @@ SCALES = {
     2: {
         "hx711": {
             "dout_pin": 1,
-            "pd_sck_pin": 5,
+            "pd_sck_pin": 6,
             "gain_channel_A": 128,
             "select_channel": 'A',
             "device_address_dout": EXPANSION_BOARD_1,
@@ -50,7 +50,7 @@ SCALES = {
     3: {
         "hx711": {
             "dout_pin": 0,
-            "pd_sck_pin": 4,
+            "pd_sck_pin": 6,
             "gain_channel_A": 128,
             "select_channel": 'A',
             "device_address_dout": EXPANSION_BOARD_1,
