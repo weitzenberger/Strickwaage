@@ -593,7 +593,7 @@ class HX711:
                 if self._offset_A_128 == 0:
                     print(self._offset_A_64)
                     print(self._offset_B)
-                if self._scale_ratio_A_128:
+                if self._scale_ratio_A_128 == 1:
                     return False
                 return float(
                     (result - self._offset_A_128) / self._scale_ratio_A_128)
