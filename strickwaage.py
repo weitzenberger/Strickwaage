@@ -15,7 +15,6 @@ E-Mail: lennart29.9@gmail.com
 import wiringpi
 from HX711.HX711_Python3.hx711 import HX711
 import hx711py
-import time
 
 PIN_BASE_1 = 65
 EXPANSION_BOARD_1 = 0x27
@@ -28,7 +27,6 @@ SCALES = {
             "pd_sck_pin": 6,  # Raspberry PI PD_SCK_PIN Nummer
             "gain_channel_A": 128,  # Der gain ist optional. Default: 128
             "select_channel": 'A',  # Der Channel ist optional. Default: 'A'
-            "device_address_dout": EXPANSION_BOARD_1,  # Device Adresse von dem ExpansionBoard in Hexadezimal
             "pin_base": PIN_BASE_1
         },
         "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
@@ -40,7 +38,6 @@ SCALES = {
             "pd_sck_pin": 6,
             "gain_channel_A": 128,
             "select_channel": 'A',
-            "device_address_dout": EXPANSION_BOARD_1,
             "pin_base": PIN_BASE_1
 
         },
@@ -53,7 +50,6 @@ SCALES = {
             "pd_sck_pin": 6,
             "gain_channel_A": 128,
             "select_channel": 'A',
-            "device_address_dout": EXPANSION_BOARD_1,
             "pin_base": PIN_BASE_1
 
         },
@@ -118,13 +114,8 @@ if __name__ == '__main__':
         print(get_weight(1))
         print(get_weight(1))
         print(get_weight(1))
-
-        time.sleep(2)
         print(get_weight(2))
-
-        time.sleep(2)
         print(get_weight(3))
 
-        time.sleep(2)
 
 
