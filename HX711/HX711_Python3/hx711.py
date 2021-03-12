@@ -593,7 +593,8 @@ class HX711:
                 if self._offset_A_128 == 0:
                     print(self._offset_A_64)
                     print(self._offset_B)
-                print(self._scale_ratio_A_128)
+                if self._scale_ratio_A_128:
+                    return False
                 return float(
                     (result - self._offset_A_128) / self._scale_ratio_A_128)
             elif self._current_channel == 'A' and self._gain_channel_A == 64:
