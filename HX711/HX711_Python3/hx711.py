@@ -190,7 +190,7 @@ class HX711:
         if isinstance(offset, int):
             if channel == 'A' and gain_A == 128:
                 self._offset_A_128 = offset
-                print
+
                 return
             elif channel == 'A' and gain_A == 64:
                 self._offset_A_64 = offset
@@ -232,6 +232,7 @@ class HX711:
             ValueError: if channel is not ('A' || 'B' || '')
             TypeError: if offset is not int type
         """
+        print("set_ratio" + str(scale_ratio))
         channel = channel.capitalize()
         if isinstance(gain_A, int):
             if channel == 'A' and gain_A == 128:
