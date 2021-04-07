@@ -5,13 +5,12 @@
 
 Created on 16.02.2021 14:12
 
-Modul zur Ansteuerung von HX711 Sensoren.
+Skript zur Kalibrierung  von HX711 Sensoren.
 
 @author: L.We
 E-Mail: lennart29.9@gmail.com
 
 """
-import RPi.GPIO as GPIO  # import GPIO
 import wiringpi
 from HX711.HX711_Python3.hx711 import HX711  # import the class HX711
 
@@ -27,7 +26,7 @@ try:
     wiringpi.wiringPiSetupGpio()
 
 
-    hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin), device_address_dout=int(device, 16), pin_base=int(pin_base))
+    hx = HX711(dout_pin=int(dout_pin), pd_sck_pin=int(pd_sck_pin), pin_base=int(pin_base))
     # measure tare and save the value as offset for current channel
     # and gain selected. That means channel A and gain 128
     err = hx.zero()
