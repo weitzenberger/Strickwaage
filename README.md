@@ -13,6 +13,7 @@ Web Service starten:
 Web Service Methoden:
 - scale/?id=id | id ist vom Typ integer und definiert die Waage
 - scale/all | gibt alle definierten Waagen zurück
+- Mit Konsolenbefehl "sudo noip2" kann der DNS Service gestartet werden. Wenn nicht mehr benötigt gerne deinstallieren.
 
 Response Datenstruktur:
 [
@@ -36,9 +37,10 @@ Die GPIO-PIN Nummern DOUT_PIN und PD_SCK_PIN an denen die Waage angeschlossen is
 
 - cd usr/local/bin/Strickwaage
 - python3 calibrate-cli.py
-- Anleitung befolgen. Terminologie: PD_SCK PIN: INPUT PIN auf dem RaspberryPI. Hiermit wird die Waage angesteuert (BitBanging etc.)
-DOUT PIN: PIN auf dem ExtensionBoard. Hier wird die Waage ausgelesen
-Device Adresse: Die Device Adresse des ExtensionBoards ist 0x27. Wenn weitere Extensionboards hinzukommen, kann man mit Konsolenbefehl "i2cdetect -y 1" die Adresse ausleesen.
+- Anleitung befolgen. Terminologie: 
+  - PD_SCK PIN: INPUT PIN auf dem RaspberryPI. Hiermit wird die Waage angesteuert (BitBanging etc.)
+  - DOUT PIN: PIN auf dem ExtensionBoard. Hier wird die Waage ausgelesen
+  - Device Adresse: Die Device Adresse des ExtensionBoards ist 0x27. Wenn weitere Extensionboards hinzukommen, kann man mit Konsolenbefehl "i2cdetect -y 1" die Adresse ausleesen.
 - Am Ende muss die "Zusammenfassung" manuell in strickwaage.py/SCALES übertragen werden. Ggf. muss eine neue WaagenID definiert werden.
 
 ---
