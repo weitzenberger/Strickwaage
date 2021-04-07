@@ -49,7 +49,7 @@ Probleme & Ausblick:
 
 Der Web Service braucht recht lange um zu reagieren. Etwa 2 Sekunden. Grund: Nach Initialisierung der Waage muss 0.5 Sekunden gewartet werden (HX711 Datenblatt).
 Es werden 20 Messungen durchgeführt (jetzt reduziert auf 6). Eine Paralleliserung der Waagenabfragen kann nicht durch Multithreading realisiert werden. 
-Das Timing der GPIO Pins wäre dann nicht mehr korrekt. Möglich wäre es für die Ansteuerung der GPIO im Code zu parallelisieren. Ich habe damit im Code angefangen, war dann aber doch zu aufwendig :P. Also erstmal schauen ob es reicht.
+Das Timing der GPIO Pins wäre dann nicht mehr korrekt. Möglich wäre es für die Ansteuerung der GPIO im Code zu parallelisieren. Ich habe damit im Code angefangen, war dann aber doch etwas aufwendig :P. Also erstmal schauen ob es reicht.
 Ab und zu gibt die Waage einen absurd hohen Wert zurück (bspw.: 270kg für die Bierflasche). Das Problem ist, dass in diesem Moment der GAIN nicht richtig gesetzt wird und damit auch keine "ratio". In diesem Fall wird die Waage neu initialisiert und die Messung wiederholt.
 Falls es möglich ist ohne Doppelbelegung der PD_SCK PIN (also der INPUT Pin auf dem Raspberry) alle Waagen anzuschließen, könnte man auch alle Waagen beim Starten des Web Service initialisieren und dann nur noch bei einem Request auslesen. 
 Das würde evtl etwas beschleunigen und stabilisieren.
