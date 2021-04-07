@@ -28,8 +28,8 @@ SCALES = {
             "select_channel": 'A',  # Der Channel ist optional. Default: 'A'
             "pin_base": PIN_BASE_1
         },
-        "offset": 107154,  # Offset wird mithilfe von calibrate-cli.py berechnet
-        "ratio": 513.8683333333333  # ratio wird mithilfe von calibrate-cli.py berechnet
+        "offset": 107256,  # Offset wird mithilfe von calibrate-cli.py berechnet
+        "ratio": 499.10877192982457  # ratio wird mithilfe von calibrate-cli.py berechnet
     },
     2: {
         "hx711": {

@@ -41,6 +41,7 @@ Die GPIO-PIN Nummern DOUT_PIN und PD_SCK_PIN an denen die Waage angeschlossen is
 - Anleitung befolgen. Terminologie: 
   - PD_SCK PIN: INPUT PIN auf dem RaspberryPI. Hiermit wird die Waage angesteuert (BitBanging etc.)
   - DOUT PIN: PIN auf dem ExtensionBoard. Hier wird die Waage ausgelesen
+  - PIN_BASE: 65. Im Register des RaspberryPI fangen die PINs des Extensionboards bei 65 an.
   - Device Adresse: Die Device Adresse des ExtensionBoards ist 0x27. Wenn weitere Extensionboards hinzukommen, kann man mit Konsolenbefehl "i2cdetect -y 1" die Adresse ausleesen.
 - Am Ende muss die "Zusammenfassung" manuell in strickwaage.py/SCALES übertragen werden. Ggf. muss eine neue WaagenID definiert werden.
 
