@@ -70,7 +70,8 @@ class HX711:
             wiringpi.pinMode(self._pd_sck, 1)
             self.select_channel(select_channel)
             self.set_gain_A(gain_channel_A)
-            time.sleep(0.5)
+
+
 
     def select_channel(self, channel):
         """
@@ -93,6 +94,7 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
+        time.sleep(0.5)
 
     def set_gain_A(self, gain):
         """
@@ -114,6 +116,7 @@ class HX711:
         # after changing channel or gain it has to wait 50 ms to allow adjustment.
         # the data before is garbage and cannot be used.
         self._read()
+        time.sleep(0.5)
 
     def zero(self, readings=30):
         """
@@ -327,8 +330,6 @@ class HX711:
         """
         # if DOUT pin is low data is ready for reading
         if isinstance(self._dout, collections.Iterable) and isinstance(self._pd_sck, collections.Iterable):
-            bus_ret = wiringpi.digitalRead(self.pin_base + self._dout)
-
             for i in GPIO.input(self._dout):
                 if i != 0:
                     return False
