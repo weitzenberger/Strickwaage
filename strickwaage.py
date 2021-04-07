@@ -14,7 +14,6 @@ E-Mail: lennart29.9@gmail.com
 
 import wiringpi
 from HX711.HX711_Python3.hx711 import HX711
-import hx711py
 
 PIN_BASE_1 = 65
 EXPANSION_BOARD_1 = 0x27
@@ -64,10 +63,6 @@ def init():
     wiringpi.mcp23017Setup(PIN_BASE_1, EXPANSION_BOARD_1)
     wiringpi.wiringPiSetupGpio()
 
-
-
-
-
 def get_weight(scale_number):
     scale = SCALES.get(scale_number, None)
     if not scale:
@@ -80,7 +75,7 @@ def get_weight(scale_number):
 
     weight = hx.get_weight_mean()
     while hx.get_current_scale_ratio(kwargs['select_channel'], kwargs['gain_channel_A']) == 1:
-        print('try again')
+        # nochmal versuchen solange gain_channel nicht korrekt gesetzt werden konnte
         hx.set_offset(scale['offset'])
         hx.set_scale_ratio(scale['ratio'])
         weight = hx.get_weight_mean()
@@ -99,13 +94,6 @@ def get_all():
         ls += get_weight(scale_number)
     return ls
 
-def get_all_concurrent():
-    set_sck_pin = set()
-    set_dout = list()
-    for scale_number, item in SCALES.items():
-        set_sck_pin.add(item['hx711']['pd_sck_pin'])
-        set_dout.add(item['hx711']['dout_pin'])
-
 
 if __name__ == '__main__':
     init()
@@ -116,6 +104,7 @@ if __name__ == '__main__':
         print(get_weight(1))
         print(get_weight(2))
         print(get_weight(3))
+        print(get_all())
 
 
 
