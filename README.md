@@ -11,8 +11,8 @@ Web Service starten:
 - python3 webapp.py
 
 Web Service Methoden:
-- /?waage=id | id ist vom Typ integer und definiert die Waage
-- /all | gibt alle definierten Waagen zurück
+- scale/?id=id | id ist vom Typ integer und definiert die Waage
+- scale/all | gibt alle definierten Waagen zurück
 
 Response Datenstruktur:
 [
@@ -25,7 +25,7 @@ Response Datenstruktur:
     "scale": n, 
     "weight": yyy
   },
-  ]
+]
 
 ---
 
@@ -36,19 +36,18 @@ Die GPIO-PIN Nummern DOUT_PIN und PD_SCK_PIN an denen die Waage angeschlossen is
 
 - cd usr/local/bin/Strickwaage
 - python3 calibrate-cli.py
-- Anleitung befolgen
+- Anleitung befolgen. Terminologie: PD_SCK PIN: INPUT PIN auf dem RaspberryPI. Hiermit wird die Waage angesteuert (BitBanging etc.)
+DOUT PIN: PIN auf dem ExtensionBoard. Hier wird die Waage ausgelesen
+Device Adresse: Die Device Adresse des ExtensionBoards ist 0x27. Wenn weitere Extensionboards hinzukommen, kann man mit Konsolenbefehl "i2cdetect -y 1" die Adresse ausleesen.
 - Am Ende muss die "Zusammenfassung" manuell in strickwaage.py/SCALES übertragen werden. Ggf. muss eine neue WaagenID definiert werden.
 
-___
+---
 
 Probleme & Ausblick:
 
-Der Web Service brauch recht lange um zu reagieren. Etwa 2 Sekunden. Da müsste man nochmal schauen, ob man das reduzieren kann.
-Ab und zu gibt die Waage einen absurd hohen Wert zurück (bspw.: 270kg für die Bierflasche). Anscheinend liegt das an kurzzeitigen Spannungsspitzen
-an den GPIO-Pins liegt. Das Modul hx711.py versucht eigentlich diese Werte rauszufiltern. Klappt aber anscheinend nicht so gut. 
-Wenn man einen sinnvollen Wertebereich für das Gewicht definiert, könnte man diese Werte abfangen und eine Messung wiederholen.
-
-Es sollen zukünftig 32 bzw. 64 Waagen an den RPI angeschlossen werden. Es ist zu klären, ob das technisch umsetzbar ist.
-- GPIO-Pin-Erweiterung
-- wie lange dauert /all GET-Request? Evtl. multi-Threading einführen.
-- Reicht die Hardware aus? (Raspberry PI 3 1 GB RAM)
+Der Web Service braucht recht lange um zu reagieren. Etwa 2 Sekunden. Grund: Nach Initialisierung der Waage muss 0.5 Sekunden gewartet werden (HX711 Datenblatt).
+Es werden 20 Messungen durchgeführt (jetzt reduziert auf 6). Eine Paralleliserung der Waagenabfragen kann nicht durch Multithreading realisiert werden. 
+Das Timing der GPIO Pins wäre dann nicht mehr korrekt. Möglich wäre es für die Ansteuerung der GPIO im Code zu parallelisieren. Ich habe damit im Code angefangen, war dann aber doch zu aufwendig :P. Also erstmal schauen ob es reicht.
+Ab und zu gibt die Waage einen absurd hohen Wert zurück (bspw.: 270kg für die Bierflasche). Das Problem ist, dass in diesem Moment der GAIN nicht richtig gesetzt wird und damit auch keine "ratio". In diesem Fall wird die Waage neu initialisiert und die Messung wiederholt.
+Falls es möglich ist ohne Doppelbelegung der PD_SCK PIN (also der INPUT Pin auf dem Raspberry) alle Waagen anzuschließen, könnte man auch alle Waagen beim Starten des Web Service initialisieren und dann nur noch bei einem Request auslesen. 
+Das würde evtl etwas beschleunigen und stabilisieren.
