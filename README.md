@@ -9,11 +9,12 @@ Modul um den Web Service zu starten. Host und Port sind hart in webapp.py/HOST u
 Web Service starten:
 - cd usr/local/bin/Strickwaage
 - python3 webapp.py
+- Mit Konsolenbefehl "sudo noip2" kann der DNS Service gestartet werden. Wenn nicht mehr benötigt gerne deinstallieren/credentials löschen.
 
 Web Service Methoden:
 - scale/?id=id | id ist vom Typ integer und definiert die Waage
 - scale/all | gibt alle definierten Waagen zurück
-- Mit Konsolenbefehl "sudo noip2" kann der DNS Service gestartet werden. Wenn nicht mehr benötigt gerne deinstallieren.
+
 
 Response Datenstruktur:
 [
